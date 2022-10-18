@@ -1,0 +1,130 @@
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: Arial;
+}
+
+#wheel {
+	height: 100%;
+}
+
+#marker {
+	position: absolute;
+	width: 5em;
+	height: 2em;
+	top: 50vh;
+	left: calc(100vh - 5em);
+	overflow: hidden;
+	transform: translateY(-50%);
+}
+#marker::after {
+	content: "";
+	background-color: yellow;
+	width: 4em;
+	height: 4em;
+	position: absolute;
+	top: 50%;
+	right: -4em;
+	transform: translate(-50%,-50%) rotate(45deg) skew(-36.3deg,-36.3deg);
+}
+
+#entries {
+	float: right;
+	height: calc(80% - 4px - 1em);
+	width: calc(100% - 100vmin - 4px - 1em);
+	border-width: 2px;
+	margin: 0;
+	padding: .5em;
+	text-align: center;
+}
+#entries button, #share-button {
+	border: 0;
+	padding: 1em;
+	border-radius: 8px;
+	margin: 5px;
+	cursor: pointer;
+}
+.entry > * {
+	vertical-align: middle;
+	margin: 5px 5px 0 0;
+}
+.entry > .close-button {
+	cursor: pointer;
+}
+
+#share-button {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	width: calc(100% - 100vmin - 10px);
+	height: calc(20% - 10px);
+	background-color: deepskyblue;
+	font-size: 2em;
+}
+
+@media (orientation: portrait) {
+	#wheel {
+		width: 100%;
+		height: unset;
+	}
+	#marker {
+		left: calc(100% - 5em);
+		top: 50vw;
+	}
+	#share-button {
+		top: calc(100vw - 4em - 10px);
+	}
+}
+
+@media (max-aspect-ratio: 4/3) {
+	#entries {
+		width: calc(100% - 4px - 1em);
+		height: unset;
+	}
+	#share-button {
+		font-size: 1.1em;
+		width: 7em;
+		height: 4em;
+	}
+}
+
+.popup-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(200,200,200,0.5);
+}
+.popup {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	background-color: whitesmoke;
+	border-radius: 8px;
+	padding: 1em 2em;
+	text-align: center;
+}
+.popup .title {
+	font-size: 2em;
+}
+.popup > button {
+	display: block;
+	background-color: lightgrey;
+	border-radius: 8px;
+	border: 0;
+	padding: .5em 1em;
+	margin: .5em auto 0;
+	cursor: pointer;
+}
+.popup > button.good {
+	background-color: lime;
+}
+.popup > button.bad {
+	background-color: coral;
+}
