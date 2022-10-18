@@ -13,7 +13,8 @@ window.addEventListener("load", function() {
 		if (e.keyCode==32) launch();
 	});
 	document.getElementById("add-entry").addEventListener("click", function() {
-		legumes.push({name:"",color:"#ffffff"});
+        var color = "#"+Number(parseInt(Math.pow(256,3)*Math.random())).toString(16);
+		legumes.push({name:"",color});
 		refreshEntries();
 		refreshHash();
 	});
@@ -90,7 +91,8 @@ function mod(a,b) {
 	return (a%b+b)%b;
 }
 function launch() {
-	let speed = parseInt(Math.random()*20+10); // rad/s
+	var _2turns = 15.18, _4turns = 30.26;
+	let speed = _2turns + (_4turns-_2turns)*Math.random(); // rad/s
 	var tps = 60;
 	if (intervalId) clearInterval(intervalId);
 	intervalId = setInterval(function() {
