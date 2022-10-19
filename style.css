@@ -55,6 +55,10 @@ body {
 .entry > .close-button {
 	cursor: pointer;
 }
+.entry .ratio {
+	width: 32px;
+}
+
 
 #share-button {
 	position: absolute;

@@ -1,4 +1,8 @@
-var legumes = [[{name:"🥕 carotte",color:"#ffa500"},{name:"🍠 betterave",color:"#b814b8"},{name:"🌶 piment",color:"#f21818"},{name:"🥦 brocoli",color:"#32ae32"},{name:"🧅 oignon",color:"#f5deb3"},{name:"🍅 tomate",color:"#f35116"}],[{name:"🧇 Gauffres",color:"#ffa500"},{name:"🥞 Pancakes",color:"#ee7a1b"},{name:"🥐 Croissant ",color:"#f2cf21"},{name:"🍨 Glace",color:"#f3aae6"},{name:"🧁 Cupcakes",color:"#fd68f8"}],[{name:"👚 Ichika",color:"#fda3ff"},{name:"🎀 Nino",color:"#fc4dff"},{name:"🎧 Miku",color:"#ff0f83"},{name:"⭐ Itsuki",color:"#e32b2e"},{name:"🌱 Yotsuba",color:"#f06f38"}]][parseInt(Math.random()*3)];
+var legumes = [
+	[{name:"🥕 carotte",color:"#ffa500",ratio:1},{name:"🍠 betterave",color:"#b814b8",ratio:1},{name:"🌶 piment",color:"#f21818",ratio:1},{name:"🥦 brocoli",color:"#32ae32",ratio:1},{name:"🧅 oignon",color:"#f5deb3",ratio:1},{name:"🍅 tomate",color:"#f35116",ratio:1}],
+	[{name:"🧇 Gauffres",color:"#ffa500",ratio:1},{name:"🥞 Pancakes",color:"#ee7a1b",ratio:1},{name:"🥐 Croissant ",color:"#f2cf21",ratio:1},{name:"🍨 Glace",color:"#f3aae6",ratio:1},{name:"🧁 Cupcakes",color:"#fd68f8",ratio:1}],
+	[{name:"👚 Ichika",color:"#fda3ff",ratio:1},{name:"🎀 Nino",color:"#fc4dff",ratio:1},{name:"🎧 Miku",color:"#ff0f83",ratio:1},{name:"⭐ Itsuki",color:"#e32b2e",ratio:1},{name:"🌱 Yotsuba",color:"#f06f38",ratio:1}]
+][parseInt(Math.random()*3)];
 var wheel;
 var angle = 0;
 var intervalId = undefined;
@@ -54,6 +58,11 @@ function refreshEntries() {
 					drawWheel();
 					refreshHash();
 				}}),
+				createElement("input", {className:"ratio",type:"number",min:"1",placeholder:"Ratio",value:legumes[i].ratio},[],{change:function(e){
+					legumes[fixedI].ratio = parseInt(e.target.value);
+					drawWheel();
+					refreshHash();
+				}}),
 				createElement("input", {className:"color",type:"color",value:legumes[i].color},[],{change:function(e){
 					legumes[fixedI].color = e.target.value;
 					drawWheel();
@@ -78,14 +87,14 @@ function loadFromHash() {
 		if (hash.startsWith("#")) hash = hash.replace("#","");
 		legumes = hash.split("&").map(function(e){
 			let p = e.split("=").map(decodeURIComponent);
-			return {name:p[0],color:p[1]};
+			return {name:p[0],color:p[1],ratio:parseInt(p[2])||1};
 		});
 	}
 	drawWheel();
 	refreshEntries();
 }
 function refreshHash() {
-	window.location.hash = legumes.map(l=>encodeURIComponent(l.name)+"="+encodeURIComponent(l.color)).join("&");
+	window.location.hash = legumes.map(l=>encodeURIComponent(l.name)+"="+encodeURIComponent(l.color)+"="+encodeURIComponent(l.ratio)).join("&");
 }
 function mod(a,b) {
 	return (a%b+b)%b;
@@ -102,27 +111,39 @@ function launch() {
 		if (speed <= 0.1) {
 			clearInterval(intervalId);
 			intervalId = undefined;
-			popup(legumes[parseInt(mod(angle/Math.PI/2*(-legumes.length),legumes.length))].name);
+			popup(getResult(legumes, angle).name);
 		}
 	}, 1000/tps);
 }
+function getResult(legumes, angle) {
+	var result = mod(-angle/Math.PI/2,1)*legumes.reduce((a,l)=>a+l.ratio,0);
+	var i = 0;
+	for (var legume of legumes) {
+		if (i <= result && result < i+legume.ratio)
+			return legume;
+		i += legume.ratio;
+	}
+}
 function drawWheel() {
 	var ctx = wheel.getContext("2d");
-	var a = Math.PI*2/legumes.length;
+	var a = Math.PI*2/legumes.reduce((a,l)=>a+l.ratio,0);
 	ctx.font = "40px Arial";
 	ctx.textAlign = "center";
-	for (let i = 0; i < legumes.length; i++) {
-		ctx.fillStyle = legumes[i].color;
+	var i = 0;
+	for (var legume of legumes) {
+		var ratio = legume.ratio;
+		ctx.fillStyle = legume.color;
 		ctx.beginPath();
 		ctx.moveTo(400,400);
-		ctx.arc(400,400, 400, angle+i*a, angle+(i+1)*a);
+		ctx.arc(400,400, 400, angle+i*a, angle+(i+ratio)*a);
 		ctx.fill();
 		ctx.translate(400,400);
-		ctx.rotate(angle+i*a+a/2);
+		ctx.rotate(angle+i*a+ratio*a/2);
 		ctx.fillStyle = "black";
-		ctx.fillText(legumes[i].name, 200, 10, 400);
-		ctx.rotate(-angle-i*a-a/2);
+		ctx.fillText(legume.name, 200, 10, 400);
+		ctx.rotate(-angle-i*a-ratio*a/2);
 		ctx.translate(-400,-400);
+		i += ratio;
 	}
 }
 function popup(text) {
