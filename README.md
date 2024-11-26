@@ -2,7 +2,7 @@
 
 Page web affichant une roue de choix modifiable et partageable
 
-![wheel.png](wheel.png)
+![wheel.png](src/wheel.png)
 
 ## Crédits
 
